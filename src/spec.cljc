@@ -1,27 +1,6 @@
-(ns logic
+(ns spec
   (:require
-   [clojure.core :refer [format]]
-   [clojure.set :as clojure-set]
-   [malli.util :as mu]))
-
-(defn ->action-name
-  [_get-common-action-fn action-name & _args]
-  action-name)
-
-#_(defmulti get-args-spec ->action-name)
-#_(defmulti get-return-spec ->action-name)
-(defmulti execute-action ->action-name)
-
-#_(defn low-level-action? [multimethod action-name]
-    (not= (get-method multimethod action-name)
-          (get-method multimethod :default)))
-
-(defn select-keys-exclude
-  [m exclude-keys]
-  (->> m
-       keys
-       (filter #(not-any? #{%} exclude-keys))
-       (select-keys m)))
+   [utils :refer [select-keys-exclude]]))
 
 (declare action-name+args->args-spec)
 
@@ -104,13 +83,3 @@
     (if next-action-name
       (action-name->return-spec get-common-action-fn next-action-name)
       return)))
-
-#_(defmethod execute-action :default
-    [get-common-action-fn action-name args]
-    (let [{[next-action-name next-args] :return} (get-common-action-fn action-name)]))
-
-(defmethod execute-action :format-str [_get-common-action-fn _action-name {:keys [template values]}]
-  (apply (partial format template) values))
-
-(defmethod execute-action :arg [_get-common-action-fn _action-name {:keys [value]}]
-  value)

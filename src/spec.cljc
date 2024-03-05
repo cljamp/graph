@@ -2,84 +2,66 @@
   (:require
    [utils :refer [select-keys-exclude]]))
 
-(declare action-name+args->args-spec)
+(declare node-name->spec)
+(declare node+graph->spec)
+(declare node-name->return-spec)
 
-(defn arg->arg-spec
-  [get-common-action-fn args-spec arg arg-value]
-  (cond
-    (keyword? arg-value) {arg (action-name+args->args-spec get-common-action-fn arg-value)}
-    (vector? arg-value) (let [arg-spec (get args-spec arg)]
-                          (when (< 1 (count arg-spec))
-                            (throw (ex-info "Too long vector spec" {:arg arg
-                                                                    :spec arg-spec})))
-                          (if (vector? arg-spec)
-                            (let [args (->> arg-value
-                                            (map #(arg->arg-spec get-common-action-fn
-                                                                 {:temp-vec-arg (first arg-spec)}
-                                                                 :temp-vec-arg %))
-                                            (map :temp-vec-arg)
-                                            (filter some?)
-                                            (into []))]
-                              (if (empty? args) {} {arg args}))
-                            (throw (ex-info "Unexpected vector arg-value"
-                                            {:arg arg
-                                             :value arg-value
-                                             :spec arg-spec}))))
-    :else {}))
+(defn graph+default-spec+cached-spec+arg->spec
+  [get-common-node-fn graph default-spec cached-spec [arg-name arg]]
+  (if (some? (get cached-spec arg-name))
+    cached-spec
+    (let [default-spec (get default-spec arg-name)]
+      (cond
+        (keyword? arg)
+        (assoc cached-spec
+               arg
+               (let [node (get graph arg)]
+                 (cond
+                   (keyword? node) (node-name->spec get-common-node-fn node) 
+                   (vector? node) (node+graph->spec get-common-node-fn node graph)
+                   (nil? node) default-spec
+                   :else (throw (ex-info "Unexpected node type" {:node node})))))
 
-(defn external-args+internal-args-spec->external-args-spec
-  [get-common-action-fn external-args args-spec]
-  (let [undetermined-by-external-args (select-keys-exclude args-spec (keys external-args))]
-    (->> external-args
-         (map #(arg->arg-spec get-common-action-fn
-                              args-spec
-                              (first %)
-                              (second %)))
-         (apply merge)
-         (merge undetermined-by-external-args))))
+        (vector? arg)
+        (reduce #(graph+default-spec+cached-spec+arg->spec
+                  get-common-node-fn
+                  graph
+                  {:temp-arg (first default-spec)}
+                  %1
+                  [:temp-arg %2])
+                cached-spec
+                arg)
 
-(defn rename-spec
-  [base-spec renaming]
-  (cond
-    (map? base-spec) (->> base-spec
-                          (map #(rename-spec (second %) (get renaming (first %))))
-                          (apply merge))
-    (vector? base-spec) (->> renaming
-                             (map vector base-spec)
-                             (map #(rename-spec (first %) (second %)))
-                             (apply merge))
-    (keyword? base-spec) {renaming base-spec}
-    :else (throw (ex-info "Unexpected renaming-spec type" {:base-spec base-spec
-                                                           :renaming renaming}))))
+        :else cached-spec))))
 
-(defn action-name+args->args-spec
-  ([get-common-action-fn action-name]
-   (action-name+args->args-spec get-common-action-fn action-name {}))
-  ([get-common-action-fn action-name external-args]
-   (let [{[internal-action-name intermediate-args] :return
-          {:keys [renaming]} :args
-          {args-spec :args} :spec} (get-common-action-fn action-name)
+(defn node+graph->spec
+  [get-common-node-fn [node-name args] graph]
+  (let [node-spec (node-name->spec get-common-node-fn node-name)
+        undetermined-args (select-keys-exclude node-spec (keys args))]
+    (merge undetermined-args
+           (reduce (partial graph+default-spec+cached-spec+arg->spec
+                            get-common-node-fn
+                            graph
+                            node-spec)
+                   {}
+                   args))))
 
-         base-spec
-         (cond
-           args-spec
-           (external-args+internal-args-spec->external-args-spec get-common-action-fn external-args args-spec)
+(defn node-name->spec
+  [get-common-node-fn node-name]
+  (let [{{:keys [return] :as graph} :graph
+         {args-spec :args} :spec} (get-common-node-fn node-name)]
+    (cond
+      graph (node+graph->spec get-common-node-fn
+                              return
+                              graph)
 
-           internal-action-name
-           (action-name+args->args-spec get-common-action-fn
-                                        internal-action-name
-                                        (merge intermediate-args
-                                               external-args))
+      args-spec args-spec
+      :else nil)))
 
-           :else nil)]
-     (if renaming
-       (rename-spec base-spec renaming)
-       base-spec))))
-
-(defn action-name->return-spec
-  [get-common-action-fn action-name]
-  (let [{[next-action-name _] :return
-         {return :return} :spec} (get-common-action-fn action-name)]
-    (if next-action-name
-      (action-name->return-spec get-common-action-fn next-action-name)
+(defn node-name->return-spec
+  [get-common-node-fn node-name]
+  (let [{{[next-node-name _] :return} :graph
+         {return :return} :spec} (get-common-node-fn node-name)]
+    (if next-node-name
+      (node-name->return-spec get-common-node-fn next-node-name)
       return)))

@@ -9,25 +9,25 @@
                 :return [:any]}}
    ;; reduce
    ;; filter
-   
+
    :determine-one-arg
    {:graph {:return [:format-str {:template "%s"}]}
     :spec {:return :string
            :args {:values [:any]}}}
-   
+
    :restrict-list
    {:graph {:return [:format-str {:values [:str-value]}]}
     :spec {:return :string
            :args {:template :string
                   :str-value :any}}}
-   
+
    :restricted-list-by-two
    {:graph {:return [:format-str {:values [:first-str :second-str]}]}
     :spec {:return :string
            :args {:template :string
                   :first-str :any
                   :second-str :any}}}
-   
+
    :additional-node
    {:graph {:return [:format-str {:template "%s"
                                   :values [:formatted-string]}]
@@ -35,7 +35,7 @@
     :spec {:return :string
            :args {:formatted-string {:template :string
                                      :values [:any]}}}}
-   
+
    :nested-additional-nodes
    {:graph {:return [:format-str {:template "Hello, %s!"
                                   :values [:dear]}]

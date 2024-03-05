@@ -13,14 +13,15 @@
     (let [default-spec (get default-spec arg-name)]
       (cond
         (keyword? arg)
-        (assoc cached-spec
-               arg
-               (let [node (get graph arg)]
-                 (cond
-                   (keyword? node) (node-name->spec get-common-node-fn node) 
-                   (vector? node) (node+graph->spec get-common-node-fn node graph)
-                   (nil? node) default-spec
-                   :else (throw (ex-info "Unexpected node type" {:node node})))))
+        (let [node (get graph arg)]
+          (cond
+            (keyword? node) (assoc cached-spec
+                                   arg
+                                   (node-name->spec get-common-node-fn node))
+            (vector? node) (merge cached-spec
+                                  (node+graph->spec get-common-node-fn node graph))
+            (nil? node) (assoc cached-spec arg default-spec)
+            :else (throw (ex-info "Unexpected node type" {:node node}))))
 
         (vector? arg)
         (reduce #(graph+default-spec+cached-spec+arg->spec

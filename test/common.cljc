@@ -40,8 +40,8 @@
    {:graph {:return [:format-str {:template "Hello, %s!"
                                   :values [:dear]}]
             :dear [:format-str {:template "dear %s"
-                                :values [:fullname]}]
-            :fullname [:format-str {:template "%s %s"
+                                :values [:full-name]}]
+            :full-name [:format-str {:template "%s %s"
                                     :values [:first-name :second-name]}]}
     :spec {:return :string
            :args {:first-name :any

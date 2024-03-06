@@ -4,7 +4,7 @@
    [common :refer [get-test-common-node]]
    [cljamp.graph.execute :as sut]))
 
-(deftest exectute-action-test
+(deftest execute-action-test
   (testing "with low-level action"
     (is (= "Hello, World!"
            (sut/execute-action get-test-common-node :format-str {:template "Hello, %s!"

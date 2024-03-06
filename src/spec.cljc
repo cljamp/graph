@@ -2,9 +2,18 @@
   (:require
    [utils :refer [select-keys-exclude]]))
 
-(declare node-name->spec)
 (declare node+graph->spec)
-(declare node-name->return-spec)
+
+(defn node-name->spec
+  [get-common-node-fn node-name]
+  (let [{{:keys [return] :as graph} :graph
+         {args-spec :args} :spec} (get-common-node-fn node-name)]
+    (cond
+      graph (node+graph->spec get-common-node-fn
+                              return
+                              graph)
+      args-spec args-spec
+      :else (throw (ex-info "Unexisted node" {:node-name node-name})))))
 
 (defn graph+default-spec+cached-spec+arg->spec
   [get-common-node-fn graph default-spec cached-spec [arg-name arg]]
@@ -24,12 +33,11 @@
             :else (throw (ex-info "Unexpected node type" {:node node}))))
 
         (vector? arg)
-        (reduce #(graph+default-spec+cached-spec+arg->spec
-                  get-common-node-fn
-                  graph
-                  {:temp-arg (first default-spec)}
-                  %1
-                  [:temp-arg %2])
+        (reduce #(graph+default-spec+cached-spec+arg->spec get-common-node-fn
+                                                           graph
+                                                           {:temp-arg (first default-spec)}
+                                                           %1
+                                                           [:temp-arg %2])
                 cached-spec
                 arg)
 
@@ -47,22 +55,11 @@
                    {}
                    args))))
 
-(defn node-name->spec
-  [get-common-node-fn node-name]
-  (let [{{:keys [return] :as graph} :graph
-         {args-spec :args} :spec} (get-common-node-fn node-name)]
-    (cond
-      graph (node+graph->spec get-common-node-fn
-                              return
-                              graph)
-
-      args-spec args-spec
-      :else nil)))
-
 (defn node-name->return-spec
   [get-common-node-fn node-name]
   (let [{{[next-node-name _] :return} :graph
          {return :return} :spec} (get-common-node-fn node-name)]
-    (if next-node-name
-      (node-name->return-spec get-common-node-fn next-node-name)
-      return)))
+    (cond
+      next-node-name (node-name->return-spec get-common-node-fn next-node-name)
+      return return
+      :else (throw (ex-info "Unexisted node" {:node-name node-name})))))

@@ -2,7 +2,7 @@
   (:require
    [clojure.test :refer [deftest is testing]]
    [common :refer [get-test-common-node test-graph]]
-   [spec :as sut])
+   [cljamp.graph.spec :as sut])
   (:import
    (clojure.lang
     ExceptionInfo)))

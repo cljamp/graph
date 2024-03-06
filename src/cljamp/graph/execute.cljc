@@ -1,6 +1,6 @@
-(ns execute
+(ns cljamp.graph.execute
   (:require
-   [utils :refer [->action-name]]))
+   [cljamp.graph.utils :refer [->action-name]]))
 
 (defmulti execute-action ->action-name)
 

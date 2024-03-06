@@ -1,6 +1,6 @@
-(ns spec
+(ns cljamp.graph.spec
   (:require
-   [utils :refer [select-keys-exclude]]))
+   [cljamp.graph.utils :refer [select-keys-exclude]]))
 
 (declare node+graph->spec)
 

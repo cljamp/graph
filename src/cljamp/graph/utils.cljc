@@ -1,4 +1,4 @@
-(ns utils)
+(ns cljamp.graph.utils)
 
 (defn select-keys-exclude
   [m exclude-keys]

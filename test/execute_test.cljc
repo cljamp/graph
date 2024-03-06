@@ -2,7 +2,7 @@
   (:require
    [clojure.test :refer [deftest testing is]]
    [common :refer [get-test-common-node]]
-   [execute :as sut]))
+   [cljamp.graph.execute :as sut]))
 
 (deftest exectute-action-test
   (testing "with low-level action"

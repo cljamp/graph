@@ -7,5 +7,11 @@
     ],
     "cSpell.dictionaries": [
         "clojure"
+    ],
+    "cSpell.enableFiletypes": [
+        "github-actions-workflow",
+        "ignore",
+        "magit",
+        "makefile"
     ]
 }

@@ -1,16 +1,9 @@
-(ns common)
+(ns common
+  (:require
+   [cljamp.graph.storage :as storage]))
 
 (def test-graph
-  {:format-str {:spec {:args {:template :string
-                              :values [:any]}
-                       :return :string}}
-   :map {:spec {:args {:func :any
-                       :values [:any]}
-                :return [:any]}}
-   ;; reduce
-   ;; filter
-
-   :determine-one-arg
+  {:determine-one-arg
    {:graph {:return [:format-str {:template "%s"}]}
     :spec {:return :string
            :args {:values [:any]}}}
@@ -42,11 +35,13 @@
             :dear [:format-str {:template "dear %s"
                                 :values [:full-name]}]
             :full-name [:format-str {:template "%s %s"
-                                    :values [:first-name :second-name]}]}
+                                     :values [:first-name :second-name]}]}
     :spec {:return :string
            :args {:first-name :any
                   :second-name :any}}}})
 
-(defn get-test-common-node
-  [node-name]
-  (get test-graph node-name))
+(def test-dynamic-storage
+  (storage/->map-storage test-graph))
+
+(def test-united-storage
+  (storage/->united-storage test-dynamic-storage))

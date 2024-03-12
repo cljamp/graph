@@ -57,4 +57,5 @@
    {binaryage/devtools {:mvn/version "1.0.6"}
     com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.1.1"}
     com.gfredericks/test.chuck {:mvn/version "0.2.13"}}
-   :exec-args {}}}}
+   :exec-args {}
+   :extra-paths [test]}}}

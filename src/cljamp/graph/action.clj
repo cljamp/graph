@@ -15,13 +15,15 @@
     "Return action function"))
 
 (defrecord Type
-           [node-name spec func]
+  [node-name spec func]
 
   Protocol
 
   (node-name [_] node-name)
 
+
   (spec [_] spec)
+
 
   (func [_] func))
 

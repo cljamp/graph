@@ -14,11 +14,12 @@
     "Get all node names"))
 
 (deftype MapStorage
-         [nodes-map]
+  [nodes-map]
 
   NodesStorage
 
   (get-node [_ node-name] (get nodes-map node-name))
+
 
   (get-node-names [_] (-> nodes-map keys set)))
 
@@ -34,7 +35,7 @@
   (low-level-actions-list->map-storage [format-str/action]))
 
 (deftype UnitedStorage
-         [fixed-actions-storage dynamic-storage]
+  [fixed-actions-storage dynamic-storage]
 
   NodesStorage
 
@@ -45,6 +46,7 @@
           [low-level-actions-storage
            fixed-actions-storage
            dynamic-storage]))
+
 
   (get-node-names
     [_]

@@ -14,14 +14,6 @@ kondo:
 eastwood:
 	clojure -M:test:eastwood
 
-.PHONY: cljfmt-check
-cljfmt-check:
-	clojure -M:test:cljfmt check
-
-.PHONY: cljfmt-fix
-cljfmt-fix:
-	clojure -M:test:cljfmt fix
-
 .PHONY: cljstyle-check
 cljstyle-check:
 	cljstyle check
@@ -43,4 +35,4 @@ build:
 	clj -T:build jar
 
 .PHONY: all-checks
-all-checks: cljfmt-check cljstyle-check kibit kondo eastwood test
+all-checks: cljstyle-check kibit kondo eastwood test

@@ -11,8 +11,7 @@
       (is (= test-value
              (sut/get-node test-map-storage test-key))))
     (testing "get unexisted-key"
-      (is (= nil
-             (sut/get-node test-map-storage :unexisted-key))))
+      (is (nil? (sut/get-node test-map-storage :unexisted-key))))
     (testing "get-node-names"
       (is (= #{test-key}
              (sut/get-node-names test-map-storage))))))

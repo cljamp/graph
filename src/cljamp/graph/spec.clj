@@ -21,6 +21,7 @@
   (if (some? (get cached-spec arg-name))
     cached-spec
     (let [default-spec (get default-spec arg-name)]
+      (when (nil? default-spec) (throw (ex-info "Unexpected arg" {:arg arg-name})))
       (cond
         (keyword? arg)
         (let [node (get graph arg)]
@@ -31,7 +32,7 @@
             (vector? node) (merge cached-spec
                                   (node+graph->spec graph-storage node graph))
             (nil? node) (assoc cached-spec arg default-spec)
-            :else (throw (ex-info "Unexpected node type" {:node node}))))
+            :else cached-spec))
 
         (vector? arg)
         (reduce #(graph+default-spec+cached-spec+arg->spec graph-storage
@@ -47,14 +48,18 @@
 (defn node+graph->spec
   [graph-storage [node-name args] graph]
   (let [node-spec (node-name->spec graph-storage node-name)
-        undetermined-args (select-keys-exclude node-spec (keys args))]
-    (merge undetermined-args
-           (reduce (partial graph+default-spec+cached-spec+arg->spec
-                            graph-storage
-                            graph
-                            node-spec)
-                   {}
-                   args))))
+        undetermined-args (-> node-spec
+                              (select-keys-exclude (keys args))
+                              keys
+                              set)]
+    (if (empty? undetermined-args) 
+      (reduce (partial graph+default-spec+cached-spec+arg->spec
+                       graph-storage
+                       graph
+                       node-spec)
+              {}
+              args)
+      (throw (ex-info "Undetermined args" {:undetermined-args undetermined-args})))))
 
 (defn node-name->return-spec
   [graph-storage node-name]

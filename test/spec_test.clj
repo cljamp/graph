@@ -3,10 +3,7 @@
    [cljamp.graph.spec :as sut]
    [cljamp.graph.storage :as storage]
    [clojure.test :refer [deftest is testing]]
-   [common :refer [test-united-storage]])
-  (:import
-   (clojure.lang
-    ExceptionInfo)))
+   [common :refer [test-united-storage test-ex-info]]))
 
 (deftest node-name->spec-test
   (doall (map (fn [node-name]
@@ -16,15 +13,12 @@
                                  [:spec
                                   :args])
                          (sut/node-name->spec test-united-storage node-name)))))
-              (storage/get-node-names test-united-storage)))
+              (storage/get-node-names test-united-storage))) 
   (testing "with unexisted node"
-    (try (sut/node-name->spec test-united-storage
-                              :unxexisted-node)
-         (catch ExceptionInfo e
-           (is (= {:node-name :unxexisted-node}
-                  (ex-data e)))
-           (is (= "Unexisted node"
-                  (ex-message e)))))))
+    (test-ex-info #(sut/node-name->spec test-united-storage
+                                        :unxexisted-node)
+                  "Unexisted node"
+                  {:node-name :unxexisted-node})))
 
 (deftest graph+default-spec+cached-spec+arg->spec-test
   (testing "with fixed arg"
@@ -94,23 +88,28 @@
                                                          {:foo :foo-spec}
                                                          [:foo :bar]))))
 
-  (testing "with incorrect node type"
-    (try (sut/graph+default-spec+cached-spec+arg->spec test-united-storage
-                                                       {:bar {}}
-                                                       {:template :string, :values [:any]}
-                                                       {}
-                                                       [:foo :bar])
-         (catch ExceptionInfo e
-           (is (= {:node {}}
-                  (ex-data e)))
-           (is (= "Unexpected node type"
-                  (ex-message e)))))))
+  (testing "with unexpected arg"
+    (test-ex-info #(sut/graph+default-spec+cached-spec+arg->spec test-united-storage
+                                                                 {}
+                                                                 {:template :string}
+                                                                 {}
+                                                                 [:foo :bar])
+                  "Unexpected arg"
+                  {:arg :foo})))
 
-(deftest node+graph->spec-test
+(deftest node+graph->spec-test 
+  (testing "Undetermined args"
+    (test-ex-info #(sut/node+graph->spec test-united-storage
+                                         [:format-str
+                                          {:template "%s"}]
+                                         {})
+                  "Undetermined args"
+                  {:undetermined-args #{:values}}))
   (is (= {:values [:any]}
          (sut/node+graph->spec test-united-storage
                                [:format-str
-                                {:template "%s"}]
+                                {:template "%s"
+                                 :values :values}]
                                {}))))
 
 (deftest node-name->return-spec-test
@@ -123,10 +122,7 @@
                          (sut/node-name->return-spec test-united-storage node-name)))))
               (storage/get-node-names test-united-storage)))
   (testing "with unexisted node"
-    (try (sut/node-name->return-spec test-united-storage
-                                     :unxexisted-node)
-         (catch ExceptionInfo e
-           (is (= {:node-name :unxexisted-node}
-                  (ex-data e)))
-           (is (= "Unexisted node"
-                  (ex-message e)))))))
+    (test-ex-info #(sut/node-name->return-spec test-united-storage
+                                               :unxexisted-node)
+                  "Unexisted node"
+                  {:node-name :unxexisted-node})))

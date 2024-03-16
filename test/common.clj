@@ -8,14 +8,19 @@
    {:graph {:return [:format-str {:template "%s"
                                   :values :values}]}
     :spec {:return :string
-           :args {:values [:any]}}}
+           :args {:values [:any]}}
+    :tests [{:args {:values ["foo"]}
+             :return "foo"}]}
 
    :restrict-list
    {:graph {:return [:format-str {:template :template
                                   :values [:str-value]}]}
     :spec {:return :string
            :args {:template :string
-                  :str-value :any}}}
+                  :str-value :any}}
+    :tests [{:args {:template "%s"
+                    :str-value "foo"}
+             :return "foo"}]}
 
    :restricted-list-by-two
    {:graph {:return [:format-str {:template :template

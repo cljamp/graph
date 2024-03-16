@@ -7,15 +7,17 @@
 
 (defn resolve-internal-node
   [graph-storage graph resolved-args internal-name]
-  (if-let [[external-node-name unresolved-args] (get graph
-                                                     internal-name)]
-    (node-name+args->execute graph-storage
-                             external-node-name (resolve-args graph-storage
-                                                              graph
-                                                              resolved-args
-                                                              unresolved-args))
-    (throw (ex-info "Unexisted argument"
-                    {:arg-name internal-name}))))
+  (if-let [resolved-arg (get resolved-args internal-name)]
+    resolved-arg
+    (if-let [[external-node-name unresolved-args] (get graph
+                                                       internal-name)]
+      (node-name+args->execute graph-storage
+                               external-node-name (resolve-args graph-storage
+                                                                graph
+                                                                resolved-args
+                                                                unresolved-args))
+      (throw (ex-info "Unexisted argument"
+                      {:arg-name internal-name})))))
 
 (defn resolve-arg
   [graph-storage graph resolved-args [arg-name arg-value]]
@@ -25,8 +27,15 @@
     (assoc resolved-args
            arg-name
            (cond
-             (keyword? arg-value) (resolve-internal-node graph-storage graph resolved-args arg-value)
-             (vector? arg-value) (mapv (partial resolve-internal-node graph-storage graph) arg-value)
+             (keyword? arg-value) (resolve-internal-node graph-storage
+                                                         graph
+                                                         resolved-args
+                                                         arg-value)
+             (vector? arg-value) (mapv (partial resolve-internal-node
+                                                graph-storage
+                                                graph
+                                                resolved-args)
+                                       arg-value)
              :else arg-value))))
 
 (defn resolve-args

@@ -8,4 +8,7 @@
             {:args {:template :string
                     :values [:any]}
              :return :string}
+            [{:args {:template "%s"
+                     :values ["foo"]}
+              :return "foo"}]
             (fn [{:keys [template values]}] (apply (partial format template) values))))

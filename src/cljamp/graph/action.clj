@@ -10,12 +10,16 @@
     [action]
     "Return both of args and return spec")
 
+  (tests
+    [action]
+    "Return tests for function")
+
   (func
     [action]
     "Return action function"))
 
 (defrecord Type
-  [node-name spec func]
+           [node-name spec tests func]
 
   Protocol
 
@@ -25,8 +29,11 @@
   (spec [_] spec)
 
 
+  (tests [_] tests)
+
+
   (func [_] func))
 
 (defn ->action
-  [node-name spec func]
-  (->Type node-name spec func))
+  [node-name spec tests func]
+  (->Type node-name spec tests func))

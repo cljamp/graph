@@ -6,11 +6,11 @@
 
 (deftest node-name+args->execute!
   (is (= "foo"
-         (sut/node-name+args->execute! test-united-storage
+         (sut/node-name+args->execute test-united-storage
                                        :format-str
                                        {:template "%s"
                                         :values ["foo"]})))
   (is (= "foo"
-         (sut/node-name+args->execute! test-united-storage
+         (sut/node-name+args->execute test-united-storage
                                        :determine-one-arg
                                        {:values ["foo"]}))))

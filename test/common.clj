@@ -1,10 +1,7 @@
 (ns common
   (:require
    [cljamp.graph.storage :as storage]
-   [clojure.test :refer [is]])
-  (:import
-   (clojure.lang
-    ExceptionInfo)))
+   [clojure.test :refer [is]]))
 
 (def test-graph
   {:determine-one-arg

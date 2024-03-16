@@ -13,7 +13,7 @@
                                  [:spec
                                   :args])
                          (sut/node-name->spec test-united-storage node-name)))))
-              (storage/get-node-names test-united-storage))) 
+              (storage/get-node-names test-united-storage)))
   (testing "with unexisted node"
     (test-ex-info #(sut/node-name->spec test-united-storage
                                         :unxexisted-node)
@@ -74,9 +74,10 @@
                                                          {}
                                                          [:values ["foo" :bar]]))))
   (testing "with graph"
-    (is (= {:frmt-str {:template :string, :values [:any]}}
+    (is (= {:values [:any]}
            (sut/graph+default-spec+cached-spec+arg->spec test-united-storage
-                                                         {:frmt-str :format-str}
+                                                         {:frmt-str [:format-str {:template "%s"
+                                                                                  :values :values}]}
                                                          {:template :string, :values [:any]}
                                                          {}
                                                          [:values [:frmt-str]]))))
@@ -97,7 +98,7 @@
                   "Unexpected arg"
                   {:arg :foo})))
 
-(deftest node+graph->spec-test 
+(deftest node+graph->spec-test
   (testing "Undetermined args"
     (test-ex-info #(sut/node+graph->spec test-united-storage
                                          [:format-str

@@ -26,12 +26,10 @@
         (keyword? arg)
         (let [node (get graph arg)]
           (cond
-            (keyword? node) (assoc cached-spec
-                                   arg
-                                   (node-name->spec graph-storage node))
             (vector? node) (merge cached-spec
                                   (node+graph->spec graph-storage node graph))
             (nil? node) (assoc cached-spec arg default-spec)
+            #_(keyword? node) ;; TODO for first-class functions?
             :else cached-spec))
 
         (vector? arg)

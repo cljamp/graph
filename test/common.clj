@@ -31,10 +31,11 @@
    :additional-node
    {:graph {:return [:format-str {:template "%s"
                                   :values [:formatted-string]}]
-            :formatted-string :format-str}
+            :formatted-string [:format-str {:template :template
+                                            :values :values}]}
     :spec {:return :string
-           :args {:formatted-string {:template :string
-                                     :values [:any]}}}}
+           :args {:template :string
+                  :values [:any]}}}
 
    :nested-additional-nodes
    {:graph {:return [:format-str {:template "Hello, %s!"

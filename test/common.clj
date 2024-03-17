@@ -28,7 +28,11 @@
     :spec {:return :string
            :args {:template :string
                   :first-str :any
-                  :second-str :any}}}
+                  :second-str :any}}
+    :tests [{:args {:template "%s %s"
+                    :first-str "foo"
+                    :second-str "bar"}
+             :return "foo bar"}]}
 
    :additional-node
    {:graph {:return [:format-str {:template "%s"
@@ -37,7 +41,10 @@
                                             :values :values}]}
     :spec {:return :string
            :args {:template :string
-                  :values [:any]}}}
+                  :values [:any]}}
+    :tests [{:args {:template "%s"
+                    :values ["foo"]}
+             :return "foo"}]}
 
    :nested-additional-nodes
    {:graph {:return [:format-str {:template "Hello, %s!"
@@ -48,7 +55,10 @@
                                      :values [:first-name :second-name]}]}
     :spec {:return :string
            :args {:first-name :any
-                  :second-name :any}}}
+                  :second-name :any}}
+    :tests [{:return "Hello, dear Foo Bar!"
+             :args {:first-name "Foo"
+                    :second-name "Bar"}}]}
 
    :two-funcs-with-default-argument
    {:graph {:return [:format-str {:template "%s %s"
@@ -60,7 +70,10 @@
             :template "%s"}
     :spec {:return :string
            :args {:str1 :any
-                  :str2 :any}}}})
+                  :str2 :any}}
+    :tests [{:args {:str1 "foo"
+                    :str2 "bar"}
+             :return "foo bar"}]}})
 
 (def test-dynamic-storage
   (storage/->map-storage test-graph))

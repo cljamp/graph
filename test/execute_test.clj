@@ -5,7 +5,7 @@
    [cljamp.graph.storage :as storage]
    [common :refer [test-united-storage]]))
 
-(deftest node-name+args->execute!
+(deftest node-name+args->execute-test
   (doall (map (fn [node-name]
                 (testing (str node-name)
                   (doall (map (fn [{:keys [args return]}]

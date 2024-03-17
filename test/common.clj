@@ -73,7 +73,15 @@
                   :str2 :any}}
     :tests [{:args {:str1 "foo"
                     :str2 "bar"}
-             :return "foo bar"}]}})
+             :return "foo bar"}]}
+
+   :use-external-top-level-fn
+   {:graph {:return [:nested-additional-nodes {:first-name :first-name
+                                               :second-name ""}]}
+    :spec {:return :string
+           :args {:first-name :any}}
+    :tests [{:args {:first-name "Foo"}
+             :return "Hello, dear Foo !"}]}})
 
 (def test-dynamic-storage
   (storage/->map-storage test-graph))
@@ -88,5 +96,5 @@
                  (catch clojure.lang.ExceptionInfo e
                    e))]
     (is (instance? clojure.lang.ExceptionInfo result))
-    (is (= expected-msg (.getMessage result)))
+    (is (= expected-msg (ex-message result)))
     (is (= expected-data (ex-data result)))))

@@ -19,7 +19,7 @@
     "Return action function"))
 
 (defrecord Type
-           [node-name spec tests func]
+  [node-name spec tests func]
 
   Protocol
 

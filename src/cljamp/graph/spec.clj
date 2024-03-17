@@ -29,7 +29,7 @@
             (vector? node) (merge cached-spec
                                   (node+graph->spec graph-storage node graph))
             (nil? node) (assoc cached-spec arg default-spec)
-            #_(keyword? node) ;; TODO for first-class functions?
+            #_(keyword? node) ; TODO for first-class functions?
             :else cached-spec))
 
         (vector? arg)
@@ -50,7 +50,7 @@
                               (select-keys-exclude (keys args))
                               keys
                               set)]
-    (if (empty? undetermined-args) 
+    (if (empty? undetermined-args)
       (reduce (partial graph+default-spec+cached-spec+arg->spec
                        graph-storage
                        graph

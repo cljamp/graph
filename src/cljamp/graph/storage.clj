@@ -1,7 +1,8 @@
 (ns cljamp.graph.storage
   (:require
    [cljamp.graph.action :as action]
-   [cljamp.graph.actions.format-str :as format-str]))
+   [cljamp.graph.actions.format-str :as format-str]
+   [cljamp.graph.actions.map :as map-action]))
 
 (defprotocol NodesStorage
 
@@ -32,7 +33,8 @@
   (->map-storage (reduce #(assoc % (action/node-name %2) %2) {} low-level-actions)))
 
 (def low-level-actions-storage
-  (low-level-actions-list->map-storage [format-str/action]))
+  (low-level-actions-list->map-storage [format-str/action
+                                        map-action/action]))
 
 (deftype UnitedStorage
   [fixed-actions-storage dynamic-storage]

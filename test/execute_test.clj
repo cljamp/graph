@@ -34,3 +34,12 @@
 #_(deftest resolve-arg-test)
 
 #_(deftest resolve-args-test)
+
+(deftest test-test
+  (let [node-name :map]
+    (doall (map (fn [{:keys [args return]}]
+                  (is (= return
+                         (sut/node-name+args->execute test-united-storage node-name args))))
+                (->> node-name
+                     (storage/get-node test-united-storage)
+                     :tests)))))

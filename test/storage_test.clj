@@ -30,5 +30,6 @@
                    :return :string}}
            (select-keys (sut/get-node test-united-storage :format-str)
                         [:node-name :spec])))
-    (is (= #{:format-str}
+    (is (= #{:format-str
+             :map}
            (sut/get-node-names test-united-storage)))))

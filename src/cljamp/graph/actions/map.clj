@@ -7,7 +7,10 @@
             {:args {:func :fn
                     :values [:any]}
              :return [:any]}
-            [{:args {:func :format-str
+            [{:args {:func (fn [{:keys [template values]}]
+                             (apply (partial format
+                                             template)
+                                    values))
                      :values [{:template "%s"
                                :values ["foo"]}
                               {:template "%s"

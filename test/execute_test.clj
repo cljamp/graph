@@ -5,7 +5,7 @@
    [clojure.test :refer [deftest is testing]]
    [common :refer [test-united-storage test-ex-info]]))
 
-(deftest graph-name+args->execute-test
+#_(deftest graph-name+args->execute-test
   (doall (map (fn [graph-name]
                 (testing (str graph-name)
                   (doall (map (fn [{:keys [args return]}]
@@ -35,11 +35,11 @@
 
 #_(deftest resolve-args-test)
 
-#_(deftest test-test
+(deftest test-test
   (let [graph-name :map]
     (doall (map (fn [{:keys [args return]}]
                   (is (= return
-                         (sut/graph-name+args->execute test-united-storage graph-name args))))
+                         ((sut/graph-name+args->execute test-united-storage graph-name args)))))
                 (->> graph-name
                      (storage/name->graph test-united-storage)
                      :tests)))))

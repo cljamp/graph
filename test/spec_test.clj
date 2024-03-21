@@ -5,20 +5,20 @@
    [clojure.test :refer [deftest is testing]]
    [common :refer [test-united-storage test-ex-info]]))
 
-(deftest node-name->spec-test
-  (doall (map (fn [node-name]
-                (testing (str node-name)
-                  (is (= (get-in (storage/get-node test-united-storage
-                                                   node-name)
+(deftest graph-name->spec-test
+  (doall (map (fn [graph-name]
+                (testing (str graph-name)
+                  (is (= (get-in (storage/name->graph test-united-storage
+                                                   graph-name)
                                  [:spec
                                   :args])
-                         (sut/node-name->spec test-united-storage node-name)))))
-              (storage/get-node-names test-united-storage)))
-  (testing "with unexisted node"
-    (test-ex-info #(sut/node-name->spec test-united-storage
+                         (sut/graph-name->spec test-united-storage graph-name)))))
+              (storage/graph-names test-united-storage)))
+  (testing "with Unexisted graph name"
+    (test-ex-info #(sut/graph-name->spec test-united-storage
                                         :unxexisted-node)
-                  "Unexisted node"
-                  {:node-name :unxexisted-node})))
+                  "Unexisted graph name"
+                  {:graph-name :unxexisted-node})))
 
 (deftest graph+default-spec+cached-spec+arg->spec-test
   (testing "with fixed arg"
@@ -113,17 +113,17 @@
                                  :values :values}]
                                {}))))
 
-(deftest node-name->return-spec-test
-  (doall (map (fn [node-name]
-                (testing (str node-name)
-                  (is (= (->> node-name
-                              (storage/get-node test-united-storage)
+(deftest graph-name->return-spec-test
+  (doall (map (fn [graph-name]
+                (testing (str graph-name)
+                  (is (= (->> graph-name
+                              (storage/name->graph test-united-storage)
                               :spec
                               :return)
-                         (sut/node-name->return-spec test-united-storage node-name)))))
-              (storage/get-node-names test-united-storage)))
-  (testing "with unexisted node"
-    (test-ex-info #(sut/node-name->return-spec test-united-storage
+                         (sut/graph-name->return-spec test-united-storage graph-name)))))
+              (storage/graph-names test-united-storage)))
+  (testing "with Unexisted graph name"
+    (test-ex-info #(sut/graph-name->return-spec test-united-storage
                                                :unxexisted-node)
-                  "Unexisted node"
-                  {:node-name :unxexisted-node})))
+                  "Unexisted graph name"
+                  {:graph-name :unxexisted-node})))

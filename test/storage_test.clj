@@ -7,29 +7,29 @@
   (let [test-key :foo
         test-value 1
         test-map-storage (sut/->map-storage {test-key test-value})]
-    (testing "get-node"
+    (testing "name->graph"
       (is (= test-value
-             (sut/get-node test-map-storage test-key))))
+             (sut/name->graph test-map-storage test-key))))
     (testing "get unexisted-key"
-      (is (nil? (sut/get-node test-map-storage :unexisted-key))))
-    (testing "get-node-names"
+      (is (nil? (sut/name->graph test-map-storage :unexisted-key))))
+    (testing "graph-names"
       (is (= #{test-key}
-             (sut/get-node-names test-map-storage))))))
+             (sut/graph-names test-map-storage))))))
 
 (deftest low-level-actions-storage-test
-  (is (= {:node-name :format-str
+  (is (= {:graph-name :format-str
           :spec {:args {:template :string, :values [:any]}
                  :return :string}}
-         (select-keys (sut/get-node sut/low-level-actions-storage :format-str)
-                      [:node-name :spec]))))
+         (select-keys (sut/name->graph sut/low-level-actions-storage :format-str)
+                      [:graph-name :spec]))))
 
 (deftest ->united-storage-test
   (let [test-united-storage (sut/->united-storage (sut/->map-storage {}))]
-    (is (= {:node-name :format-str
+    (is (= {:graph-name :format-str
             :spec {:args {:template :string, :values [:any]}
                    :return :string}}
-           (select-keys (sut/get-node test-united-storage :format-str)
-                        [:node-name :spec])))
+           (select-keys (sut/name->graph test-united-storage :format-str)
+                        [:graph-name :spec])))
     (is (= #{:format-str
              :map}
-           (sut/get-node-names test-united-storage)))))
+           (sut/graph-names test-united-storage)))))

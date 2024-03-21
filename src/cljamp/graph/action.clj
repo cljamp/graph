@@ -2,7 +2,7 @@
 
 (defprotocol Protocol
 
-  (node-name
+  (graph-name
     [action]
     "Return action (node) name")
 
@@ -19,11 +19,11 @@
     "Return action function"))
 
 (defrecord Type
-  [node-name spec tests func]
+  [graph-name spec tests func]
 
   Protocol
 
-  (node-name [_] node-name)
+  (graph-name [_] graph-name)
 
 
   (spec [_] spec)
@@ -35,5 +35,5 @@
   (func [_] func))
 
 (defn ->action
-  [node-name spec tests func]
-  (->Type node-name spec tests func))
+  [graph-name spec tests func]
+  (->Type graph-name spec tests func))

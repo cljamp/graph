@@ -15,9 +15,9 @@
                                   test-action-tests
                                   test-action-fn)]
     (is (= test-action-name
-           (sut/node-name test-action)))
+           (sut/graph-name test-action)))
     (is (= test-action-name
-           (:node-name test-action)))
+           (:graph-name test-action)))
     (is (= test-action-spec
            (sut/spec test-action)))
     (is (= test-action-tests

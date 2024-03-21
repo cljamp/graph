@@ -4,25 +4,25 @@
    [cljamp.graph.actions.format-str :as format-str]
    [cljamp.graph.actions.map :as map-action]))
 
-(defprotocol NodesStorage
+(defprotocol Protocol
 
-  (get-node
-    [external-storage node-name]
+  (name->graph
+    [external-storage graph-name]
     "Extact node from storage by name")
 
-  (get-node-names
+  (graph-names
     [external-storage]
     "Get all node names"))
 
 (deftype MapStorage
   [nodes-map]
 
-  NodesStorage
+  Protocol
 
-  (get-node [_ node-name] (get nodes-map node-name))
+  (name->graph [_ graph-name] (get nodes-map graph-name))
 
 
-  (get-node-names [_] (-> nodes-map keys set)))
+  (graph-names [_] (-> nodes-map keys set)))
 
 (defn ->map-storage
   [nodes-map]
@@ -30,7 +30,7 @@
 
 (defn low-level-actions-list->map-storage
   [low-level-actions]
-  (->map-storage (reduce #(assoc % (action/node-name %2) %2) {} low-level-actions)))
+  (->map-storage (reduce #(assoc % (action/graph-name %2) %2) {} low-level-actions)))
 
 (def low-level-actions-storage
   (low-level-actions-list->map-storage [format-str/action
@@ -39,23 +39,23 @@
 (deftype UnitedStorage
   [fixed-actions-storage dynamic-storage]
 
-  NodesStorage
+  Protocol
 
-  (get-node
-    [_ node-name]
+  (name->graph
+    [_ graph-name]
     (some (fn [storage]
-            (get-node storage node-name))
+            (name->graph storage graph-name))
           [low-level-actions-storage
            fixed-actions-storage
            dynamic-storage]))
 
 
-  (get-node-names
+  (graph-names
     [_]
     (-> low-level-actions-storage
-        get-node-names
-        (concat (get-node-names fixed-actions-storage))
-        (concat (get-node-names dynamic-storage))
+        graph-names
+        (concat (graph-names fixed-actions-storage))
+        (concat (graph-names dynamic-storage))
         set)))
 
 (defn ->united-storage

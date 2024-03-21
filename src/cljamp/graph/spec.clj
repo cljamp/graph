@@ -5,16 +5,16 @@
 
 (declare node+graph->spec)
 
-(defn node-name->spec
-  [graph-storage node-name]
+(defn graph-name->spec
+  [graph-storage graph-name]
   (let [{{:keys [return] :as graph} :graph
-         {args-spec :args} :spec} (storage/get-node graph-storage node-name)]
+         {args-spec :args} :spec} (storage/name->graph graph-storage graph-name)]
     (cond
       graph (node+graph->spec graph-storage
                               return
                               graph)
       args-spec args-spec
-      :else (throw (ex-info "Unexisted node" {:node-name node-name})))))
+      :else (throw (ex-info "Unexisted graph name" {:graph-name graph-name})))))
 
 (defn graph+default-spec+cached-spec+arg->spec
   [graph-storage graph default-spec cached-spec [arg-name arg]]
@@ -44,8 +44,8 @@
         :else cached-spec))))
 
 (defn node+graph->spec
-  [graph-storage [node-name args] graph]
-  (let [node-spec (node-name->spec graph-storage node-name)
+  [graph-storage [graph-name args] graph]
+  (let [node-spec (graph-name->spec graph-storage graph-name)
         undetermined-args (-> node-spec
                               (select-keys-exclude (keys args))
                               keys
@@ -59,11 +59,11 @@
               args)
       (throw (ex-info "Undetermined args" {:undetermined-args undetermined-args})))))
 
-(defn node-name->return-spec
-  [graph-storage node-name]
-  (let [{{[next-node-name _] :return} :graph
-         {return :return} :spec} (storage/get-node graph-storage node-name)]
+(defn graph-name->return-spec
+  [graph-storage graph-name]
+  (let [{{[next-graph-name _] :return} :graph
+         {return :return} :spec} (storage/name->graph graph-storage graph-name)]
     (cond
-      next-node-name (node-name->return-spec graph-storage next-node-name)
+      next-graph-name (graph-name->return-spec graph-storage next-graph-name)
       return return
-      :else (throw (ex-info "Unexisted node" {:node-name node-name})))))
+      :else (throw (ex-info "Unexisted graph name" {:graph-name graph-name})))))

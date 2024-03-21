@@ -4,7 +4,7 @@
 
 (def action
   (->action :map
-            {:args {:func :any ; TODO
+            {:args {:func :fn
                     :values [:any]}
              :return [:any]}
             [{:args {:func :format-str

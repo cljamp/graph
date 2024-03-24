@@ -81,7 +81,42 @@
     :spec {:return :string
            :args {:first-name :any}}
     :tests [{:args {:first-name "Foo"}
-             :return "Hello, dear Foo !"}]}})
+             :return "Hello, dear Foo !"}]}
+   
+   :first-class-func
+   {:graph {:return [:map {:func :format-str
+                           :values :return-values}]
+            :format-str [:format-str {:template :fn-template
+                                      :values :fn-values}]}
+    :spec {:return [:string]
+           :args {:return-values [{:fn-template :str
+                                   :fn-values [:any]}]}}
+    :tests [{:args {:return-values [{:fn-template "%s" 
+                                     :fn-values ["foo"]}
+                                    {:fn-template "%s" 
+                                     :fn-values ["bar"]}]}
+             :return ["foo" "bar"]}]}
+   
+   :first-class-func-with-one-specified-arg
+   {:graph {:return [:map {:func :format-str
+                           :values :return-values}]
+            :format-str [:format-str {:template "%s"
+                                      :values :fn-values}]}
+    :spec {:return [:string]
+           :args {:return-values [{:fn-values [:any]}]}}
+    :tests [{:args {:return-values [{:fn-values ["foo"]}
+                                    {:fn-values ["bar"]}]}
+             :return ["foo" "bar"]}]}
+   
+   :second-first-class-func-with-one-specified-arg
+   {:graph {:return [:map {:func :format-str
+                           :values :return-values}]
+            :format-str [:format-str {:template "%s"
+                                      :values :return-values}]}
+    :spec {:return [:string]
+           :args {:return-values [:any]}}
+    :tests [{:args {:return-values ["foo" "bar"]}
+             :return ["foo" "bar"]}]}})
 
 (def test-dynamic-storage
   (storage/->map-storage test-graph))

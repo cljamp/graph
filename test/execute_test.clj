@@ -36,7 +36,7 @@
 #_(deftest resolve-args-test)
 
 (deftest test-test
-  (let [graph-name :map]
+  (let [graph-name :first-class-func]
     (doall (map (fn [{:keys [args return]}]
                   (is (= return
                          ((sut/graph-name+args->execute test-united-storage graph-name args)))))

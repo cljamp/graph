@@ -6,25 +6,22 @@
 (declare storage-graph-name->rich-fn)
 
 (defn extend-arg
-  [storage graph [arg-name arg-value]]
-   [arg-name
-    (if (vector? arg-value)
-      (mapv (partial extend-arg storage graph) arg-value)
-      (if-let [node (get graph arg-value)]
-        (if (vector? node)
-          (storage-graph-name->rich-fn storage arg-value)
-          arg-value)
-        arg-value))])
+  [storage graph arg]
+  (if (vector? arg)
+    (mapv (partial extend-arg storage graph) arg)
+    (if-let [node (get graph arg)]
+      (if (vector? node)
+        (storage-graph-name->rich-fn storage arg)
+        arg)
+      arg)))
 
 (defn storage-graph->rich-fn
   [storage {{[template-graph-name template-args] :return
-             :as graph} :graph
-            {args-spec :args} :spec}]
+             :as graph} :graph}]
   (reduce rich-fn/carry
           (storage-graph-name->rich-fn storage
                                       template-graph-name)
-          (map (partial extend-arg
-                        storage graph)
+          (map (fn [[arg-name arg-value]] [arg-name (extend-arg storage graph arg-value)])
                template-args)))
 
 (defn storage-graph-name->rich-fn

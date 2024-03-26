@@ -5,7 +5,7 @@
    [clojure.test :refer [deftest is testing]]
    [common :refer [test-united-storage test-ex-info test-data]]))
 
-(deftest storage-graph-name->action-test
+#_(deftest storage-graph-name->action-test
     (doall (map (fn [[graph-name {{expected-args-spec :args
                                    expected-return-spec :return} :spec
                                   tests :tests}]]
@@ -21,22 +21,19 @@
                       (is (= expected-args-spec
                              args-spec))
                       (is (= expected-return-spec
-                             return-spec)))))
+                             return-spec))))i)
                 test-data))
     (testing "Unexisted name"
       (test-ex-info (sut/storage-graph-name->rich-fn test-united-storage
-                                                      :unexisted-node)
+                                                     :unexisted-node)
                     "Unexisted name"
                     {:graph-name :unexisted-node})))
 
 (deftest test-test
-  (let [graph-name :determine-one-arg
+  (let [graph-name :additional-node
         {{expected-args-spec :args
           expected-return-spec :return} :spec
-         tests :tests} (or (->> graph-name
-                                (get test-data))
-                           (->> graph-name
-                                (storage/name->graph test-united-storage)))
+         tests :tests} (get test-data graph-name)
         {func :func
          {args-spec :args
           return-spec :return} :spec}

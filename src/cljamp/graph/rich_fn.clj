@@ -43,7 +43,7 @@
                                 dissoc
                                 arg-name)
                         func]
-                       arg-value)))
+                       (reverse arg-value))))
 
       :else
       (->rich-fn (update spec :args dissoc arg-name)

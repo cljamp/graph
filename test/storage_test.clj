@@ -16,11 +16,11 @@
       (is (= #{test-key}
              (sut/graph-names test-map-storage))))))
 
-(deftest low-level-actions-storage-test
+(deftest base-rich-fns-storage-test
   (is (= {:graph-name :format-str
           :spec {:args {:template :string, :values [:any]}
                  :return :string}}
-         (select-keys (sut/name->graph sut/low-level-actions-storage :format-str)
+         (select-keys (sut/name->graph sut/base-rich-fns-storage :format-str)
                       [:graph-name :spec]))))
 
 (deftest ->united-storage-test

@@ -6,22 +6,24 @@
    [common :refer [test-united-storage test-ex-info test-data]]))
 
 #_(deftest storage-graph-name->action-test
-    (doall (map (fn [[graph-name {{expected-args-spec :args
-                                   expected-return-spec :return} :spec
-                                  tests :tests}]]
-                  (testing (str graph-name)
-                    (let [{func :func
+    (doall (map (fn [[expected-graph-name {{expected-args-spec :args
+                                            expected-return-spec :return} :spec
+                                           tests :tests}]]
+                  (testing (str expected-graph-name)
+                    (let [{:keys [func graph-name]
                            {args-spec :args
                             return-spec :return} :spec}
-                          (sut/storage-graph-name->rich-fn test-united-storage graph-name)]
+                          (sut/storage-graph-name->rich-fn test-united-storage expected-graph-name)]
                       (doall (map (fn [{:keys [return args]}]
                                     (is (= return
                                            (func args))))
                                   tests))
+                      (is (= expected-graph-name
+                             graph-name))
                       (is (= expected-args-spec
                              args-spec))
                       (is (= expected-return-spec
-                             return-spec))))i)
+                             return-spec)))) i)
                 test-data))
     (testing "Unexisted name"
       (test-ex-info (sut/storage-graph-name->rich-fn test-united-storage
@@ -30,18 +32,20 @@
                     {:graph-name :unexisted-node})))
 
 (deftest test-test
-  (let [graph-name :additional-node
+  (let [expected-graph-name :two-funcs-with-default-argument
         {{expected-args-spec :args
           expected-return-spec :return} :spec
-         tests :tests} (get test-data graph-name)
-        {func :func
+         tests :tests} (get test-data expected-graph-name)
+        {:keys [func graph-name]
          {args-spec :args
           return-spec :return} :spec}
-        (sut/storage-graph-name->rich-fn test-united-storage graph-name)]
+        (sut/storage-graph-name->rich-fn test-united-storage expected-graph-name)]
     (doall (map (fn [{:keys [return args]}]
                   (is (= return
                          (func args))))
                 tests))
+    (is (= expected-graph-name
+           graph-name))
     (is (= expected-args-spec
            args-spec))
     (is (= expected-return-spec

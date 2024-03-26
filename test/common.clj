@@ -52,10 +52,10 @@
 
    :additional-node
    {:spec {:return :string
-           :args {:template :string
-                  :values [:any]}}
-    :tests [{:args {:template "%s"
-                    :values ["foo"]}
+           :args {:template-arg :string
+                  :values-arg [:any]}}
+    :tests [{:args {:template-arg "%s"
+                    :values-arg ["foo"]}
              :return "foo"}]}
 
    :nested-additional-nodes
@@ -119,8 +119,8 @@
    :additional-node
    {:graph {:return [:format-str {:template "%s"
                                   :values [:formatted-string]}]
-            :formatted-string [:format-str {:template :template
-                                            :values :values}]}}
+            :formatted-string [:format-str {:template :template-arg
+                                            :values :values-arg}]}}
 
    :nested-additional-nodes
    {:graph {:return [:format-str {:template "Hello, %s!"

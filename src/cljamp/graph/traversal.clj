@@ -1,19 +1,20 @@
 (ns cljamp.graph.traversal
   (:require
    [cljamp.graph.storage :as storage]
-   [cljamp.graph.rich-fn :as rich-fn]))
+   [cljamp.graph.rich-fn :as rich-fn]
+   [clojure.set :as set]))
 
 (declare storage-graph-name->rich-fn)
+(declare storage-graph->rich-fn)
 
 (defn extend-arg
   [storage graph arg]
-  (if (vector? arg)
-    (mapv (partial extend-arg storage graph) arg)
-    (if-let [node (get graph arg)]
-      (if (vector? node)
-        (storage-graph-name->rich-fn storage arg)
-        arg)
-      arg)))
+  (cond
+    (vector? arg) (mapv (partial extend-arg storage graph) arg)
+    (vector? (get graph arg)) (storage-graph->rich-fn storage {:graph (-> graph
+                                                                          (dissoc :return)
+                                                                          (set/rename-keys {arg :return}))})
+    :else arg))
 
 (defn storage-graph->rich-fn
   [storage {{[template-graph-name template-args] :return

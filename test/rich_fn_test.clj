@@ -30,4 +30,12 @@
         (is (= {:second :number}
                (get-in carried-fn [:spec :args])))
         (is (= 1
-               ((:func carried-fn) {:second 1})))))))
+               ((:func carried-fn) {:second 1})))))
+    (testing "with other rich-fn"
+      (let [carried-fn (sut/carry test-fn [:values [3 :second (sut/carry test-fn [:values [2 :fourth]])]])]
+        (is (= {:second :number
+                :fourth :number}
+               (get-in carried-fn [:spec :args])))
+        (is (= 0
+               ((:func carried-fn) {:second 2
+                                    :fourth 1})))))))

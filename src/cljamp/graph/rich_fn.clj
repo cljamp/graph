@@ -33,9 +33,10 @@
                                       arg-spec)
                             
                             (instance? RichFn arg-value)
-                            (-> arg-value
-                                :spec
-                                (update :args merge (get-in arg-value [:spec :args])))
+                            (update spec
+                                    :args
+                                    merge
+                                    (get-in arg-value [:spec :args]))
 
                             :else spec)
                           (fn [args]

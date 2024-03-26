@@ -32,7 +32,7 @@
                     {:graph-name :unexisted-node})))
 
 (deftest test-test
-  (let [expected-graph-name :two-funcs-with-default-argument
+  (let [expected-graph-name :first-class-func
         {{expected-args-spec :args
           expected-return-spec :return} :spec
          tests :tests} (get test-data expected-graph-name)

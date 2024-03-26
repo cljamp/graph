@@ -14,6 +14,7 @@
     (vector? (get graph arg)) (storage-graph->rich-fn storage {:graph (-> graph
                                                                           (dissoc :return)
                                                                           (set/rename-keys {arg :return}))})
+    (contains? graph arg) (get graph arg)
     :else arg))
 
 (defn storage-graph->rich-fn

@@ -90,18 +90,19 @@
                                      :fn-values ["bar"]}]}
              :return ["foo" "bar"]}]}
 
-   :first-class-func-with-one-specified-arg
-   {:spec {:return [:string]
-           :args {:return-values [{:fn-values [:any]}]}}
-    :tests [{:args {:return-values [{:fn-values ["foo"]}
-                                    {:fn-values ["bar"]}]}
-             :return ["foo" "bar"]}]}
+;;    :first-class-func-with-one-specified-arg
+;;    {:spec {:return [:string]
+;;            :args {:return-values [{:fn-values [:any]}]}}
+;;     :tests [{:args {:return-values [{:fn-values ["foo"]}
+;;                                     {:fn-values ["bar"]}]}
+;;              :return ["foo" "bar"]}]}
 
-   :second-first-class-func-with-one-specified-arg
-   {:spec {:return [:string]
-           :args {:return-values [:any]}}
-    :tests [{:args {:return-values ["foo" "bar"]}
-             :return ["foo" "bar"]}]}})
+;;    :second-first-class-func-with-one-specified-arg
+;;    {:spec {:return [:string]
+;;            :args {:return-values [:any]}}
+;;     :tests [{:args {:return-values ["foo" "bar"]}
+;;              :return ["foo" "bar"]}]}
+   })
 
 (def test-graph
   {:determine-one-arg

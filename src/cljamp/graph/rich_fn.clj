@@ -31,7 +31,7 @@
                             (assoc-in spec
                                       [:args arg-value]
                                       arg-spec)
-                            
+
                             (instance? RichFn arg-value)
                             (update spec
                                     :args
@@ -58,18 +58,20 @@
                                 arg-name)
                         func]
                        (reverse arg-value))))
-      
+
       (instance? RichFn arg-value) (let [{arg-spec :spec
                                           arg-func :func} arg-value
                                          arg-names (-> arg-spec
-                                                      :args
-                                                      keys)]
+                                                       :args
+                                                       keys)]
                                      (->r-fn (update spec :args merge (:args arg-spec)) ;; TODO check what happen if duplicated
-                                           (fn [args]
-                                             (func (dissoc (assoc args
-                                                                  arg-name
-                                                                  (arg-func (select-keys args arg-names)))
-                                                           arg-names)))))
+                                             (fn [args]
+                                               (func (dissoc (assoc args
+                                                                    arg-name
+                                                                    (if (= :fn (get-in spec [:args arg-name]))
+                                                                      arg-func
+                                                                      (arg-func (select-keys args arg-names))))
+                                                             arg-names)))))
 
       :else
       (->r-fn (update spec :args dissoc arg-name)

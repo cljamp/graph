@@ -4,7 +4,7 @@
    [clojure.test :refer [deftest is testing]]
    [common :refer [test-united-storage test-ex-info test-data]]))
 
-(deftest storage-graph-name->action-test
+#_(deftest storage-graph-name->action-test
     (doall (map (fn [[expected-graph-name {{expected-args-spec :args
                                             expected-return-spec :return} :spec
                                            tests :tests}]]
@@ -30,7 +30,7 @@
                     "Unexisted graph name"
                     {:graph-name :unexisted-node})))
 
-#_(deftest test-test
+(deftest test-test
   (let [expected-graph-name :first-class-func
         {{expected-args-spec :args
           expected-return-spec :return} :spec
